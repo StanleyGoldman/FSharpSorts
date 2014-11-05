@@ -130,12 +130,48 @@ let mergesort (list : System.Collections.Generic.List<int>) () =
     list.Clear()
     list.AddRange(result)
 
+let heapsort (list : System.Collections.Generic.List<int>) () =
+    
+    let siftDown startIndex endIndex =
+        let mutable root = startIndex
+        
+        let mutable breaks = false
+
+        while root * 2 + 1 <= endIndex && not(breaks) do
+            let childIndex = root * 2 + 1
+            let mutable swapIndex = root
+
+            if list.Item(swapIndex) < list.Item(childIndex) then
+                swapIndex <- childIndex
+
+            if (childIndex + 1) <= endIndex && list.Item(swapIndex) < list.Item(childIndex + 1) then
+                swapIndex <- childIndex + 1
+
+            if not(swapIndex = root) then
+                swap root swapIndex list
+                root <- swapIndex
+            else
+                breaks <- true
+
+    let heapify count =
+        let start = ((count - 2) / 2)
+        for i in [start .. -1 .. 0] do
+            siftDown i (count - 1)
+
+    heapify (list.Count)
+
+    let mutable endIndex = list.Count - 1
+    while endIndex > 0 do
+        swap endIndex 0 list
+        endIndex <- endIndex - 1
+        siftDown 0 endIndex
 
 runOperationsOnRandomList [
         10 ;
         100 ;
         1000  ;
     ] [
+        ("Heap Sort", heapsort) ;
         ("Merge Sort", mergesort) ;
         ("Insertion Sort", insertionsort) ;
         ("Quick Sort", quicksort) ;
