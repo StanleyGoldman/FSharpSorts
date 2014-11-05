@@ -166,11 +166,28 @@ let heapsort (list : System.Collections.Generic.List<int>) () =
         endIndex <- endIndex - 1
         siftDown 0 endIndex
 
+let selectionsort (list : System.Collections.Generic.List<int>) () =
+    for i in [0 .. (list.Count - 1)] do
+        let swapindex, _ =
+            list
+            |> Seq.skip i
+            |> Seq.mapi (fun index value -> (index + i, value))
+            |> Seq.fold (fun state (index, value) ->
+                match state with
+                | None -> Some(index, value)
+                | Some(prevIndex, prevValue) -> match value < prevValue with
+                                                | true -> Some(index, value)
+                                                | false -> Some(prevIndex, prevValue)) None
+            |> fun x -> x.Value
+
+        swap i swapindex list
+
 runOperationsOnRandomList [
         10 ;
         100 ;
         1000  ;
     ] [
+        ("Selection Sort", selectionsort) ;
         ("Heap Sort", heapsort) ;
         ("Merge Sort", mergesort) ;
         ("Insertion Sort", insertionsort) ;
