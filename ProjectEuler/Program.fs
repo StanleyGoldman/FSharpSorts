@@ -43,12 +43,12 @@ let runOperationsOnRandomList sizes operations =
         |> Seq.iter(fun (title, operation) ->
             let copiedList = (copyList randomList)
 
-            if copiedList.Count <= 10 then printList "Unsorted" copiedList
+            //if copiedList.Count <= 10 then printList "Unsorted" copiedList
 
             timedOperation (sprintf "%s %i Items" title size) (operation copiedList)
             |> ignore
 
-            if copiedList.Count <= 10 then printList "Sorted" copiedList
+            //if copiedList.Count <= 10 then printList "Sorted" copiedList
         )
 
         System.Console.WriteLine(String.Empty)
@@ -62,6 +62,7 @@ let bubblesort (list : System.Collections.Generic.List<'a>) () =
                     swap i j list
 
 let insertionsort (list : System.Collections.Generic.List<'a>) () =
+     //n (n-1) / 2
     for i in [1 .. list.Count - 1 ] do
         [i .. -1 .. 1]
         |> Seq.takeWhile(fun  j -> list.Item(j-1) > list.Item(j))
@@ -167,6 +168,7 @@ let heapsort (list : System.Collections.Generic.List<int>) () =
         siftDown 0 endIndex
 
 let selectionsort (list : System.Collections.Generic.List<int>) () =
+     //n (n-1) / 2
     for i in [0 .. (list.Count - 1)] do
         let swapindex, _ =
             list
@@ -187,12 +189,18 @@ runOperationsOnRandomList [
         100 ;
         1000  ;
     ] [
+        //n^2 worst
         ("Selection Sort", selectionsort) ;
+        ("Insertion Sort", insertionsort) ;
+        ("Bubble Sort", bubblesort) ;
+
+        //n log(n) average
+        //n^2 sorts worst
+        ("Quick Sort", quicksort) ;
+
+        //n log(n) worst
         ("Heap Sort", heapsort) ;
         ("Merge Sort", mergesort) ;
-        ("Insertion Sort", insertionsort) ;
-        ("Quick Sort", quicksort) ;
-        ("Bubble Sort", bubblesort) ;
     ]
 
 System.Console.WriteLine("Press any key to contine...")
